@@ -15,7 +15,9 @@ import com.cafe24.mysite.vo.UserVo;
 
 @Repository
 public class UserDao {
-	
+	public UserDao() {
+		System.out.println("userDao 생성");
+	}
 	public Boolean update(UserVo vo) {
 		boolean result = false;
 		Connection conn = null;

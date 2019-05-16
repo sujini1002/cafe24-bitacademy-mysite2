@@ -11,6 +11,10 @@ public class UserService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	public UserService() {
+		System.out.println("userService 생성");
+	}
 
 	public Boolean join(UserVo userVo) {
 		return userDao.insert(userVo);

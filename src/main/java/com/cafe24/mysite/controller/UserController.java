@@ -17,6 +17,9 @@ import com.cafe24.mysite.vo.UserVo;
 @RequestMapping("/user")
 public class UserController {
 	
+	public UserController() {
+		System.out.println("userController 생성");
+	}
 	@Autowired
 	private UserService userService;
 	

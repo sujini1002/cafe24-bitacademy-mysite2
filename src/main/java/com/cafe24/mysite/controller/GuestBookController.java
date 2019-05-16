@@ -19,6 +19,10 @@ public class GuestBookController {
 	@Autowired
 	private GuestBookService guestBookService;
 	
+	public GuestBookController() {
+		System.out.println("GuestBookController 생성");
+	}
+	
 	@RequestMapping(value="")
 	public String guestbook(Model model) {
 		model.addAttribute("list", guestBookService.getlist());
