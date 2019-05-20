@@ -31,7 +31,13 @@
 		where no = #{no}
 	]]>
 	</select>
-	
+	<select id="getByEmail" resultType="uservo" parameterType="string">
+	<![CDATA[
+		select no,name,email,password,gender 
+		from user 
+		where email = #{email}
+	]]>
+	</select>
 	<update id="update" parameterType="uservo">
 		<![CDATA[
 			update user

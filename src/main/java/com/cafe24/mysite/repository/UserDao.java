@@ -39,6 +39,10 @@ public class UserDao {
 	public UserVo get(long no) {
 		return sqlSession.selectOne("user.getByNo", no);
 	}
+	
+	public UserVo get(String email) {
+		return sqlSession.selectOne("user.getByEmail", email);
+	}
 
 	public UserVo get(String email, String password) {
 		Map<String,String> map = new HashMap<String, String>();

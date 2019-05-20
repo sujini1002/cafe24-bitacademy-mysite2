@@ -12,6 +12,11 @@ public class UserService {
 	@Autowired
 	private UserDao userDao;
 	
+	public Boolean existEmail(String email) {
+		UserVo userVo = userDao.get(email);
+		return userVo != null;
+	}
+	
 	public UserService() {
 		System.out.println("userService 생성");
 	}
@@ -32,4 +37,5 @@ public class UserService {
 	public Boolean update(UserVo updateUserVo) {
 		return userDao.update(updateUserVo);
 	}
+
 }

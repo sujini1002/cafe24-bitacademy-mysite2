@@ -20,8 +20,6 @@ import com.cafe24.mysite.vo.GuestBookVo;
 @Repository
 public class GuestBookDao {
 	
-	@Autowired
-	private DataSource dataSource;
 	
 	@Autowired
 	private SqlSession sqlSession;

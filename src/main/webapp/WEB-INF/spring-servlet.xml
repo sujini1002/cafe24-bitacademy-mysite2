@@ -11,13 +11,38 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- 1. validator, conversionService, messageConverter를 자동으로 등록 -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven>
+		<!-- messageConverter message를 utf-8로 인코딩 -->
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>text/html; charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json; charset=UTF-8</value>
+					</list>
+				</property>
+			</bean>
+
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
 	<!-- 2. 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->
 	<mvc:default-servlet-handler />
 
-	<!-- 3. viewResolver 설정 / 어노테이션이 없는 빈들은  빈설정을 해야한다. -->
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"><!-- viewResolver 생성 -->
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" /><!-- setter가 필요하다. 한개만 설정하는 것 여러 viewList를 설정할 경우 따로 설정해야 한다. -->
+	<!-- 3. viewResolver 설정 / 어노테이션이 없는 빈들은 빈설정을 해야한다. -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"><!-- viewResolver 생성 -->
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" /><!-- setter가 필요하다. 
+			한개만 설정하는 것 여러 viewList를 설정할 경우 따로 설정해야 한다. -->
 		<property name="prefix" value="/WEB-INF/views/" /><!-- viewResover.setPrefix("/WEB-INF/views")이렇게 -->
 		<property name="suffix" value=".jsp" />
 	</bean>
@@ -27,6 +52,7 @@
 	<context:annotation-config /><!-- 어노테이션이 붙은 클래스를 찾아서 컨테이너에 등록 -->
 	<!-- Controller Scanning하는 base package 지정 -->
 	<context:component-scan
-		base-package="com.cafe24.mysite.controller, com.cafe24.mysite.exception" /><!-- 이 패키지 내에서만 찾아라 -->
+		base-package="com.cafe24.mysite.controller, com.cafe24.mysite.controller.api, com.cafe24.mysite.exception " /><!-- 
+		이 패키지 내에서만 찾아라 -->
 
 </beans>
