@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<!-- 글쓰기  -->
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+			insert into board values(null,#{title},#{content},0,now(),#{user_no},(select if(max(group_no)is null,1,max(group_no)+1)from board b),1,0)
+		]]>
+	</insert>
+	<!-- 글쓰기 후 view페이지 이동을 위한 no값 구하기 --> 
+	<select id="lastID" resultType="long">
+		<![CDATA[
+			select max(no) from board
+		]]>
+	</select>
+	<!-- view페이지 가져오기 -->
+	<select id="getView" parameterType="long" resultType="boardVo">
+		<![CDATA[
+			select b.no, b.title,b.content,date_format(b.reg_date,'%Y-%m-%d %H:%i:%s') as reg_date,b.user_no,u.name as user_name
+			from board b join user u
+			on b.user_no = u.no
+			where b.no = #{_parameter} 
+		]]> 
+	</select>
+	<!-- 답글 달 제목 가져오기 -->
+	<select id="getTitle" parameterType="long" resultType="boardVo">
+		<![CDATA[
+			select concat('[RE]:',title) as title,no from board where no = #{_parameter}
+		]]>
+	</select>
+	<!-- 답글 작성하기 -->
+	<insert id="reply" parameterType="boardvo">
+		<![CDATA[
+			insert into board values(null,#{title},#{content},0,now(),#{user_no},
+			(select group_no from board b where no=#{no}),(select order_no+1 from board b where no=#{no}),
+			(select depth+1 from board b where no=#{no}))
+		]]>
+	</insert>
+	<!-- 답글의 순서 정렬하기 -->
+	<update id="updateByOrderNo" parameterType="boardvo">
+		<![CDATA[
+			update board  set order_no = order_no + 1 
+			where order_no >= (select * from(select order_no+1 from board where no=#{no})as b)
+			and group_no = (select * from(select group_no from board where no=#{no})as c);
+		]]>
+	</update>
+	<!-- 전체 리스트 가져오기 -->
+	<select id="getList" resultType="boardVo">
+		<![CDATA[
+			select b.no, b.title,u.name as user_name,hit,date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as reg_date,b.user_no,b.depth
+			from board b join user u
+            on b.user_no = u.no
+            order by group_no desc, order_no asc;
+		]]> 
+	</select>
+</mapper>

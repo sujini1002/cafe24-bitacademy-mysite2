@@ -1,4 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@page import="com.cafe24.mysite.vo.UserVo"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
 <title>mysite</title>
@@ -10,15 +16,24 @@
 		<jsp:include page="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="/board">
-					<input type = "hidden" name = "a" value="write">
+				
+				<form class="board-form" method="post" action="${pageContext.servletContext.contextPath }/board/write">
+					<input type="hidden" name="user_no" value="${authUser.no}">
+					<input type="hidden" name="no" value="${boardVo.no}">
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
 						</tr>
 						<tr>
 							<td class="label">제목</td>
-							<td><input type="text" name="title" value=""></td>
+							<td>
+								<c:if test="${boardVo eq null }">
+									<input type="text" name="title" value="">
+								</c:if>
+								<c:if test="${boardVo ne null }">
+									<input type="text" name="title" value="${boardVo.title }">
+								</c:if>
+							</td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
@@ -28,7 +43,7 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="/board">취소</a>
+						<a href="${pageContext.servletContext.contextPath }/board">취소</a>
 						<input type="submit" value="등록">
 					</div>
 				</form>				
