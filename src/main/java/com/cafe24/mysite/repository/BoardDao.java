@@ -38,4 +38,19 @@ public class BoardDao {
 	public List<BoardVo> getList(){
 		return sqlSession.selectList("board.getList");
 	}
+	public Boolean update(BoardVo boardVo) {
+		int count = sqlSession.update("board.update", boardVo);
+		return 1==count;
+	}
+	public Boolean delete(long no) {
+		int count = sqlSession.delete("board.delete",no);
+		return count==1;
+	}
+	public Long getUser(long no) {
+		return sqlSession.selectOne("board.getUser", no);
+	}
+	public Boolean updateByHit(long no) {
+		int count = sqlSession.update("board.updateByHit",no);
+		return count == 1;
+	}
 }

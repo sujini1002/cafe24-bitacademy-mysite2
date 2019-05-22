@@ -31,7 +31,7 @@
 					<c:forEach items="${list}" var="vo" varStatus="status">			
 					<tr>
 						<td>${count-status.index }</td>
-						<td style="text-align:left; padding-left:${50 * vo.depth}">
+						<td style="text-align:left; padding-left:${15 * vo.depth}px;">
 							<c:if test="${vo.depth >0 }">
 								<img src="${pageContext.servletContext.contextPath }/assets/images/reply.png">
 							</c:if>
@@ -40,7 +40,11 @@
 						<td>${vo.user_name }</td>
 						<td>${vo.hit }</td>
 						<td>${vo.reg_date }</td>
-						<td><a href="${pageContext.servletContext.contextPath }/board/delete/${vo.no}" class="del">삭제</a></td>
+						<td>
+							<c:if test="${authUser.no eq vo.user_no and authUser ne null}">
+								<a href="${pageContext.servletContext.contextPath }/board/delete/${vo.no}" class="del">삭제</a>
+							</c:if>
+						</td>
 					</tr>
 				</c:forEach>	
 				</table>

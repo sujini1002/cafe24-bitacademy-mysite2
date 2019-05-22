@@ -40,5 +40,21 @@ public class BoardService {
 	public List<BoardVo> getList(){
 		return boardDao.getList();
 	}
+
+	public Boolean modify(BoardVo boardVo) {
+		return boardDao.update(boardVo);
+	}
+
+	public Boolean delete(long no) {
+		return boardDao.delete(no);
+	}
+
+	public Long getUser(long no) {
+		return boardDao.getUser(no);
+	}
+	
+	public Boolean updateByHit(long no) {
+		return boardDao.updateByHit(no);
+	}
 	
 }

@@ -44,7 +44,9 @@
 				<div class="bottom">
 					<a href="${pageContext.servletContext.contextPath }/board/write/${boardVo.no}">답글달기</a>
 					<a href="${pageContext.servletContext.contextPath }/board">글목록</a>
-					<a href="${pageContext.servletContext.contextPath }/board/modify/${boardVo.no}">글수정</a>
+					<c:if test="${authUser.no eq boardVo.user_no and authUser ne null}">
+						<a href="${pageContext.servletContext.contextPath }/board/modify/${boardVo.no}">글수정</a>
+					</c:if>
 				</div>
 			</div>
 		</div>

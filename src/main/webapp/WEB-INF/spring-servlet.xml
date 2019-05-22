@@ -10,6 +10,9 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+	<!-- auto Proxy -->
+	<aop:aspectj-autoproxy />
+
 	<!-- 1. validator, conversionService, messageConverter를 자동으로 등록 -->
 	<mvc:annotation-driven>
 		<!-- messageConverter message를 utf-8로 인코딩 -->
@@ -46,7 +49,15 @@
 		<property name="prefix" value="/WEB-INF/views/" /><!-- viewResover.setPrefix("/WEB-INF/views")이렇게 -->
 		<property name="suffix" value=".jsp" />
 	</bean>
-
+	<!-- 6. MessageSource 텍스트를 출력하여 jsp화면에 출력-->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages/messages_ko</value>
+			</list>
+		</property>
+	</bean>
 
 	<!-- 빈설정을 annotation으로 한다.(자동스캐닝 @Controller에 대한 auto scanning) -->
 	<context:annotation-config /><!-- 어노테이션이 붙은 클래스를 찾아서 컨테이너에 등록 -->

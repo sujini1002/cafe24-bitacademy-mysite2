@@ -28,12 +28,12 @@
 		</triggeringPolicy>
 	</appender>
 	
-	<logger name="com.cafe24.mysite.exception"  level="error" additivity="false">
+	<logger name="com.cafe24.mysite.exception"  level="info" additivity="false">
             <appender-ref ref="consoleAppender" />
             <appender-ref ref="fileAppender" />
     </logger>
     <!-- 루트(글로벌) 로거 -->
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="consoleAppender" />
 	</root>
 	<!-- <appender name="fileAppender3" class="ch.qos.logback.core.rolling.RollingFileAppender">
