@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.cafe24.mysite.vo.BoardVo;
+import com.cafe24.mysite.vo.PagingVo;
 
 @Repository
 public class BoardDao {
@@ -35,8 +36,12 @@ public class BoardDao {
 		int count = sqlSession.insert("board.reply", boardVo);
 		return 1==count;
 	}
-	public List<BoardVo> getList(){
-		return sqlSession.selectList("board.getList");
+	//전체리스트
+	public List<BoardVo> getList(PagingVo vo){
+		return sqlSession.selectList("board.getList",vo);
+	}
+	public int getTotalRowNum() {
+		return sqlSession.selectOne("board.getTotalRowNum");
 	}
 	public Boolean update(BoardVo boardVo) {
 		int count = sqlSession.update("board.update", boardVo);

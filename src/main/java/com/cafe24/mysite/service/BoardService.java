@@ -1,12 +1,15 @@
 package com.cafe24.mysite.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cafe24.mysite.repository.BoardDao;
 import com.cafe24.mysite.vo.BoardVo;
+import com.cafe24.mysite.vo.PagingVo;
 
 @Service
 public class BoardService {
@@ -37,8 +40,32 @@ public class BoardService {
 		return boardDao.reply(boardVo);
 	}
 	
-	public List<BoardVo> getList(){
-		return boardDao.getList();
+	//전체 리스트 페이징
+	public Map<String,Object> getList(int page){
+		
+		Map<String,Object> map = new HashMap<String, Object>();
+		
+		PagingVo pagingvo = new PagingVo(boardDao.getTotalRowNum(), page);
+		List<BoardVo> list= boardDao.getList(pagingvo);
+		//현재 페이지 첫번째 블럭
+		int startPageBlock = (page<=pagingvo.getPAGE_PER_BLOCK()/2)?1:page-pagingvo.getPAGE_PER_BLOCK()/2;
+		//현재 페이지 마지막 블럭
+		int endPageBlock =  page+pagingvo.getPAGE_PER_BLOCK()/2;
+		if(startPageBlock==1) {
+			endPageBlock = pagingvo.getPAGE_PER_BLOCK();
+		}else if(page+pagingvo.getPAGE_PER_BLOCK()-1 > pagingvo.getTotalPageNum()) {
+			startPageBlock = pagingvo.getTotalPageNum()-pagingvo.getPAGE_PER_BLOCK()+1;
+			endPageBlock = pagingvo.getTotalPageNum();
+		}
+		
+		
+		map.put("paging", pagingvo);
+		map.put("list", list);
+		map.put("nowPage",page);
+		map.put("endPageBlock", endPageBlock);
+		map.put("startPageBlock", startPageBlock);
+		
+		return map;
 	}
 
 	public Boolean modify(BoardVo boardVo) {

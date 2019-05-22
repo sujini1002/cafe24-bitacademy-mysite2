@@ -2,6 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="board">
+	<!-- 전체 리스트 가져오기 -->
+	<select id="getList" resultType="boardVo" parameterType="pagingvo">
+		<![CDATA[
+			select b.no, b.title,u.name as user_name,b.hit,date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as reg_date,b.user_no,b.depth
+			from board b join user u
+            on b.user_no = u.no
+            order by group_no desc, order_no asc
+            limit #{startRowNum},#{PAGE_PER_NUM}
+		]]>
+	</select>
+	<!-- 페이징을 위한 전체 행 갯수 -->
+	<select id="getTotalRowNum" resultType="int">
+		<![CDATA[
+			select count(*) from board;
+		]]>
+	</select>
 	<!-- 글쓰기  -->
 	<insert id="insert" parameterType="boardvo">
 		<![CDATA[
@@ -42,18 +58,9 @@
 		<![CDATA[
 			update board  set order_no = order_no + 1 
 			where order_no >= (select * from(select order_no+1 from board where no=#{no})as b)
-			and group_no = (select * from(select group_no from board where no=#{no})as c);
+			and group_no = (select * from(select group_no from board where no=#{no})as c)
 		]]>
 	</update>
-	<!-- 전체 리스트 가져오기 -->
-	<select id="getList" resultType="boardVo">
-		<![CDATA[
-			select b.no, b.title,u.name as user_name,b.hit,date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as reg_date,b.user_no,b.depth
-			from board b join user u
-            on b.user_no = u.no
-            order by group_no desc, order_no asc;
-		]]> 
-	</select>
 	<!-- 글 수정 -->
 	<update id="update" parameterType="boardVo">
 		update board set title = #{title}, content = #{content} where no = #{no}

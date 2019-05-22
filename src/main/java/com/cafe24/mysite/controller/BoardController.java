@@ -1,6 +1,6 @@
 package com.cafe24.mysite.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe24.mysite.service.BoardService;
 import com.cafe24.mysite.vo.BoardVo;
@@ -26,10 +27,10 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
-	@RequestMapping({"","/list"})
-	public String list(Model model) {
-		List<BoardVo> list = boardService.getList();
-		model.addAttribute("list", list);
+	@RequestMapping(value={"","/list"})
+	public String list(Model model,@RequestParam(value="page", required = true,defaultValue = "1")int page) {
+		Map<String,Object> map = boardService.getList(page);
+		model.addAttribute("map", map);
 		return "board/list";
 	}
 	

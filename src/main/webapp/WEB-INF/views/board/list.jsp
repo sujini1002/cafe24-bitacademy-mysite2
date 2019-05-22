@@ -28,9 +28,9 @@
 						<th>&nbsp;</th>
 					</tr>
 					<c:set var='count' value='${fn:length(list)}'/>
-					<c:forEach items="${list}" var="vo" varStatus="status">			
+					<c:forEach items="${map.list}" var="vo" varStatus="status">			
 					<tr>
-						<td>${count-status.index }</td>
+						<td>${status.index +1}</td>
 						<td style="text-align:left; padding-left:${15 * vo.depth}px;">
 							<c:if test="${vo.depth >0 }">
 								<img src="${pageContext.servletContext.contextPath }/assets/images/reply.png">
@@ -51,13 +51,23 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
-						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
-						<li><a href="">▶</a></li>
+						<c:if test="${-1 <= map.nowPage-map.paging.PAGE_PER_BLOCK-1}">
+							<li><a href="${pageContext.servletContext.contextPath }/board?page=${map.nowPage - map.paging.PAGE_PER_BLOCK+1}">◀</a></li>
+						</c:if>
+						<c:forEach begin="${map.startPageBlock }" end="${map.endPageBlock}" step="1"
+							var="num" varStatus="status">
+							<c:if test="${map.nowPage eq num}">
+							<li class="selected"><a href="${pageContext.servletContext.contextPath }/board?page=${num}">${num }</a></li>
+							</c:if>
+							<c:if test="${map.nowPage ne num }">
+							<li><a
+								href="${pageContext.servletContext.contextPath }/board?page=${num}">${num}</a></li>
+							</c:if>
+						</c:forEach>
+						<c:if test="${map.paging.totalPageNum >= map.nowPage + map.paging.PAGE_PER_BLOCK -1}">
+						<li><a href="${pageContext.servletContext.contextPath }/board?page=${map.nowPage + map.paging.PAGE_PER_BLOCK -1}">▶</a></li>
+						</c:if>
+
 					</ul>
 				</div>					
 				<!-- pager 추가 -->

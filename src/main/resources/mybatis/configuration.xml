@@ -5,6 +5,7 @@
 		<typeAlias alias="guestbookvo" type="com.cafe24.mysite.vo.GuestBookVo" />
 		<typeAlias alias="uservo" type="com.cafe24.mysite.vo.UserVo" />
 		<typeAlias alias="boardvo" type="com.cafe24.mysite.vo.BoardVo" />
+		<typeAlias alias="pagingvo" type="com.cafe24.mysite.vo.PagingVo" />
 	</typeAliases>
 	<mappers>
 		<mapper resource="mybatis/mapper/user.xml" />
