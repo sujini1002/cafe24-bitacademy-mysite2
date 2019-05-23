@@ -15,7 +15,7 @@
 		<div id="content">
 			<div id="board">
 				<form id="search_form" action="${pageContext.servletContext.contextPath }/board/search" method="post">
-					<input type="text" id="kwd" name="kwd" value="">
+					<input type="text" id="kwd" name="kwd" value="${kwd }">
 					<input type="submit" value="찾기">
 				</form>
 				<table class="tbl-ex">
@@ -52,20 +52,20 @@
 				<div class="pager">
 					<ul>
 						<c:if test="${-1 <= map.nowPage-map.paging.PAGE_PER_BLOCK-1}">
-							<li><a href="${pageContext.servletContext.contextPath }/board?page=${map.nowPage - map.paging.PAGE_PER_BLOCK+1}">◀</a></li>
+							<li><a href="${pageContext.servletContext.contextPath }/board/search?kwd=${kwd }&page=${map.nowPage - map.paging.PAGE_PER_BLOCK+1}">◀</a></li>
 						</c:if>
 						<c:forEach begin="${map.startPageBlock }" end="${map.endPageBlock}" step="1"
 							var="num" varStatus="status">
 							<c:if test="${map.nowPage eq num}">
-							<li class="selected"><a href="${pageContext.servletContext.contextPath }/board?page=${num}">${num }</a></li>
+							<li class="selected"><a href="${pageContext.servletContext.contextPath }/board/search?kwd=${kwd }&page=${num}">${num }</a></li>
 							</c:if>
 							<c:if test="${map.nowPage ne num }">
 							<li><a
-								href="${pageContext.servletContext.contextPath }/board?page=${num}">${num}</a></li>
+								href="${pageContext.servletContext.contextPath }/board/search?kwd=${kwd }&page=${num}">${num}</a></li>
 							</c:if>
 						</c:forEach>
 						<c:if test="${map.paging.totalPageNum >= map.nowPage + map.paging.PAGE_PER_BLOCK -1}">
-						<li><a href="${pageContext.servletContext.contextPath }/board?page=${map.nowPage + map.paging.PAGE_PER_BLOCK -1}">▶</a></li>
+						<li><a href="${pageContext.servletContext.contextPath }/board/search?kwd=${kwd }&page=${map.nowPage + map.paging.PAGE_PER_BLOCK -1}">▶</a></li>
 						</c:if>
 
 					</ul>

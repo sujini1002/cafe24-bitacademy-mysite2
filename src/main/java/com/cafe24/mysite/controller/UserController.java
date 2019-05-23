@@ -13,10 +13,12 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cafe24.mysite.service.UserService;
 import com.cafe24.mysite.vo.UserVo;
+import com.cafe24.security.Auth;
+import com.cafe24.security.AuthUser;
+
 
 @Controller
 @RequestMapping("/user")
@@ -28,11 +30,12 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	//회원가입 폼
 	@RequestMapping(value="/join",method = RequestMethod.GET)
 	public String join(@ModelAttribute UserVo userVo) {
 		return "user/join";
 	}
-	
+	//회원가입 동작
 	@RequestMapping(value="/join",method = RequestMethod.POST)
 	public String join(@ModelAttribute  @Valid UserVo userVo, BindingResult result,Model model) {
 		
@@ -49,7 +52,7 @@ public class UserController {
 		userService.join(userVo);
 		return "redirect:/user/joinsuccess";//dispatcher가 컨텍스트 패스를 붙이고 다시 리다이렉트를 보낸다.
 	}
-	
+	//회원가입 성공
 	@RequestMapping("/joinsuccess")
 	public String joinSuccess() {
 		
@@ -62,44 +65,16 @@ public class UserController {
 		return "user/login";
 	}
 	
-	@RequestMapping(value="/login",method = RequestMethod.POST)
-	public String login(@RequestParam(value="email",required = true,defaultValue = "")String email,
-						@RequestParam(value="password",required = true,defaultValue = "")String password,
-						HttpSession session,
-						Model model) {
-		
-		UserVo authUser = userService.getUser(new UserVo(email,password));
-		if(authUser == null) {
-			model.addAttribute("result", "fail");
-			return "/user/login";
-		}
-		
-		//session 처리(지금은 HttpSession을 사용(기술침투)하지만 나중엔 제거 예정-interceptor)
-		session.setAttribute("authUser", authUser);
-		
-		
-		return "redirect:/";
-	}
-	@RequestMapping(value="/logout",method = RequestMethod.GET)
-	public String logout(HttpSession session) {
-		
-		session.removeAttribute("authUser");
-		return "redirect:/";
-	}
-	@RequestMapping(value="/update",method = RequestMethod.GET)
-	public String update(Model model,HttpSession session) {
-		UserVo authUserVo = (UserVo)session.getAttribute("authUser");
-		if(authUserVo == null) {
-			return "redirect:/";
-		}
-		model.addAttribute("userVo", userService.getUser(authUserVo.getNo()));
+	@Auth
+	@RequestMapping( value="/update", method=RequestMethod.GET )
+	public String update(@AuthUser UserVo authUser,Model model ){
+		UserVo userVo = userService.getUser( authUser.getNo() );
+		model.addAttribute( "userVo", userVo );
 		return "user/update";
 	}
 	
 	@RequestMapping(value="/update",method = RequestMethod.POST)
-	public String update(@ModelAttribute UserVo updateUserVo,
-						HttpSession session,
-						Model model) {
+	public String update(@AuthUser UserVo updateUserVo,HttpSession session,Model model) {
 		
 		boolean result = userService.update(updateUserVo);
 		if(result) {
@@ -114,3 +89,27 @@ public class UserController {
 //	}
 
 }
+//@RequestMapping(value="/auth",method = RequestMethod.POST)
+//public String login(@RequestParam(value="email",required = true,defaultValue = "")String email,
+//					@RequestParam(value="password",required = true,defaultValue = "")String password,
+//					HttpSession session,
+//					Model model) {
+//	
+//	UserVo authUser = userService.getUser(new UserVo(email,password));
+//	if(authUser == null) {
+//		model.addAttribute("result", "fail");
+//		return "/user/login";
+//	}
+//	
+//	//session 처리(지금은 HttpSession을 사용(기술침투)하지만 나중엔 제거 예정-interceptor)
+//	session.setAttribute("authUser", authUser);
+//	
+//	
+//	return "redirect:/";
+//}
+//@RequestMapping(value="/logout",method = RequestMethod.GET)
+//public String logout(HttpSession session) {
+//	
+//	session.removeAttribute("authUser");
+//	return "redirect:/";
+//}

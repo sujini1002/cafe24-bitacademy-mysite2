@@ -72,8 +72,8 @@ public class BoardService {
 		return boardDao.update(boardVo);
 	}
 
-	public Boolean delete(long no) {
-		return boardDao.delete(no);
+	public Boolean delete(Map map) {
+		return boardDao.delete(map);
 	}
 
 	public Long getUser(long no) {
@@ -82,6 +82,43 @@ public class BoardService {
 	
 	public Boolean updateByHit(long no) {
 		return boardDao.updateByHit(no);
+	}
+
+	public Map<String, Object> getSearch(String kwd,int page) {
+		
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("kwd", kwd);
+		
+		PagingVo pagingvo = new PagingVo(boardDao.getKwdTotalRowNum(kwd), page);
+		paramMap.put("paging", pagingvo);
+		List<BoardVo> list= boardDao.getSearch(paramMap);
+		//현재 페이지 첫번째 블럭
+		int startPageBlock = (page<=pagingvo.getPAGE_PER_BLOCK()/2)?1:page-pagingvo.getPAGE_PER_BLOCK()/2;
+		//현재 페이지 마지막 블럭
+		int endPageBlock =  page+pagingvo.getPAGE_PER_BLOCK()/2;
+		
+		
+		
+		if(startPageBlock==1) {
+			if(pagingvo.getTotalPageNum()<pagingvo.getPAGE_PER_BLOCK()) {
+				endPageBlock = pagingvo.getTotalPageNum();
+			}else {
+				endPageBlock = pagingvo.getPAGE_PER_BLOCK();
+			}
+		}else if(page+pagingvo.getPAGE_PER_BLOCK()-1 > pagingvo.getTotalPageNum()) {
+			startPageBlock = pagingvo.getTotalPageNum()-pagingvo.getPAGE_PER_BLOCK()+1;
+			endPageBlock = pagingvo.getTotalPageNum();
+		}
+		
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap.put("paging", pagingvo);
+		resultMap.put("list", list);
+		resultMap.put("nowPage",page);
+		resultMap.put("endPageBlock", endPageBlock);
+		resultMap.put("startPageBlock", startPageBlock);
+		
+		return resultMap;
 	}
 	
 }

@@ -1,11 +1,11 @@
 package com.cafe24.mysite.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.cafe24.mysite.service.BoardService;
 import com.cafe24.mysite.vo.BoardVo;
 import com.cafe24.mysite.vo.UserVo;
+import com.cafe24.security.Auth;
+import com.cafe24.security.AuthUser;
 
 @Controller
 @RequestMapping("/board")
@@ -27,33 +29,34 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
+	//게시판 페이지
 	@RequestMapping(value={"","/list"})
 	public String list(Model model,@RequestParam(value="page", required = true,defaultValue = "1")int page) {
 		Map<String,Object> map = boardService.getList(page);
 		model.addAttribute("map", map);
+		
 		return "board/list";
+	}
+	@RequestMapping("/search")
+	public String search(Model model,@RequestParam("kwd")String kwd,@RequestParam(value="page", required = true,defaultValue = "1")int page) {
+		Map<String,Object> map = boardService.getSearch(kwd,page);
+		model.addAttribute("map", map);
+		model.addAttribute("kwd", kwd);
+		return "board/searchList";
 	}
 	
 	//write페이지 가기
+	@Auth(role=Auth.Role.USER)
 	@RequestMapping(value="/write",method = RequestMethod.GET)
-	public String write(HttpSession session) {
-		
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/user/login";
-		}
-		
+	public String write() {
 		return "board/write";
 	}
 	
 	//답글
+	@Auth
 	@RequestMapping(value="/write/{no}",method = RequestMethod.GET)
-	public String write(HttpSession session,@PathVariable(value="no")long no,Model model) {
+	public String write(@PathVariable(value="no")long no,Model model) {
 		
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/user/login";
-		}
 		model.addAttribute("boardVo", boardService.getTitle(no));
 		return "board/write";
 	}
@@ -113,23 +116,15 @@ public class BoardController {
 			}
 		}
 		
-		
-		
-		
 		model.addAttribute("boardVo", boardService.getView(no));
 
 		return "board/view";
 	}
 	//수정 화면 
+	@Auth
 	@RequestMapping(value="/modify/{no}", method = RequestMethod.GET)
-	public String update(@PathVariable(value="no")long no,Model model,HttpSession session) {
+	public String update(@PathVariable(value="no")long no,Model model) {
 		BoardVo boardVo = boardService.getView(no);
-		UserVo userVo = (UserVo)session.getAttribute("authUser");
-		
-		if(userVo.getNo() != boardVo.getUser_no() || userVo == null) {
-			return "redirect:/board";
-		}
-		
 		model.addAttribute("boardVo", boardVo);
 		return "board/modify";
 	}
@@ -140,16 +135,15 @@ public class BoardController {
 		return "redirect:/board/view/"+boardVo.getNo();
 	}
 	//삭제
+	@Auth
 	@RequestMapping(value="/delete/{no}")
-	public String delete(@PathVariable(value="no")long no,HttpSession session) {
-		//권한체크 
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		long user_no = boardService.getUser(no);
-		if(authUser.getNo()!=user_no) {
-			return "redirect:/board";
-		}
+	public String delete(@PathVariable(value="no")long no,@AuthUser UserVo authUser) {
 		//삭제
-		boardService.delete(no);
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("no", no);
+		map.put("user_no", authUser.getNo());
+		
+		boardService.delete(map);
 		return "redirect:/board";
 	}
 }

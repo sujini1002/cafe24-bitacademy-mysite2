@@ -63,18 +63,41 @@
 	</update>
 	<!-- 글 수정 -->
 	<update id="update" parameterType="boardVo">
-		update board set title = #{title}, content = #{content} where no = #{no}
+		update board set title = #{title}, content = #{content} where no = #{no} and user_no = #{user_no}
 	</update>
 	<!-- 글 삭제전 작성자 확인 -->
 	<select id="getUser" parameterType="long" resultType="long">
 		select user_no from board where no = #{_parameter}
 	</select>
 	<!-- 글 삭제 -->
-	<delete id="delete" parameterType="long">
-		delete from board where no = #{_parameter}
+	<delete id="delete" parameterType="map">
+		delete from board where no = #{no} and user_no = #{user_no}
 	</delete>
 	<!-- 조회수  증가-->
 	<update id="updateByHit" parameterType="long">
 		update board set hit = hit+1 where no = #{_parameter}
 	</update>
+	<!-- 검색 -->
+	<select id="search" resultType="boardVo" parameterType="map">
+		<![CDATA[
+			select b.no, b.title,u.name as user_name,b.hit,date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as reg_date,b.user_no,b.depth
+			from board b join user u
+            on b.user_no = u.no
+			where b.title like CONCAT('%',#{kwd},'%')
+			or b.content like CONCAT('%',#{kwd},'%')
+			or u.name like CONCAT('%',#{kwd},'%')
+            order by b.group_no desc, b.order_no asc
+            limit #{paging.startRowNum},#{paging.PAGE_PER_NUM}
+		]]>
+	</select>
+	<!-- 검색 페이징을 위한 전체 행 갯수 -->
+	<select id="getKwdTotalRowNum" resultType="int">
+		<![CDATA[
+			select count(*) from board b join user u
+			on b.user_no = u.no
+			where b.title like CONCAT('%',#{kwd},'%')
+			or b.content like CONCAT('%',#{kwd},'%')
+			or u.name like CONCAT('%',#{kwd},'%')
+		]]>
+	</select>
 </mapper>

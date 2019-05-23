@@ -17,24 +17,26 @@
 	<mvc:annotation-driven>
 		<!-- messageConverter message를 utf-8로 인코딩 -->
 		<mvc:message-converters>
-			<bean
-				class="org.springframework.http.converter.StringHttpMessageConverter">
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
 						<value>text/html; charset=UTF-8</value>
 					</list>
 				</property>
 			</bean>
-			<bean
-				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
 				<property name="supportedMediaTypes">
 					<list>
 						<value>application/json; charset=UTF-8</value>
 					</list>
 				</property>
 			</bean>
-
 		</mvc:message-converters>
+		
+		<!-- Argument Resolver -->
+		<mvc:argument-resolvers>
+			<bean class="com.cafe24.security.AuthUserHandlerMethodArgumentResover"></bean>
+		</mvc:argument-resolvers>
 	</mvc:annotation-driven>
 
 	<!-- 2. 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->
@@ -58,7 +60,30 @@
 			</list>
 		</property>
 	</bean>
-
+	
+	<!-- Interceptors -->
+ 	 <mvc:interceptors>
+        <!-- <mvc:interceptor>
+        	<mvc:mapping path="/guestbook/**" /> 
+    	<bean class="com.cafe24.mysite.interceptor.MyInterceptor02" />
+        </mvc:interceptor> -->
+        <mvc:interceptor>
+        	<mvc:mapping path="/user/auth"/> 
+    			<bean class="com.cafe24.security.AuthLoginInterceptor" />
+        	</mvc:interceptor>
+        <mvc:interceptor>
+        	<mvc:mapping path="/user/logout"/> 
+    			<bean class="com.cafe24.security.AuthLogoutInterceptor" />
+        </mvc:interceptor>
+         <mvc:interceptor>
+        	<mvc:mapping path="/**"/> 
+        	<mvc:exclude-mapping path="/user/auth"/>
+        	<mvc:exclude-mapping path="/user/logout"/>
+        	<mvc:exclude-mapping path="/assets/**"/>
+    		<bean class="com.cafe24.security.AuthInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+	
 	<!-- 빈설정을 annotation으로 한다.(자동스캐닝 @Controller에 대한 auto scanning) -->
 	<context:annotation-config /><!-- 어노테이션이 붙은 클래스를 찾아서 컨테이너에 등록 -->
 	<!-- Controller Scanning하는 base package 지정 -->

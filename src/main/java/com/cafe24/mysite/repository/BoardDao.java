@@ -1,6 +1,7 @@
 package com.cafe24.mysite.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,8 @@ public class BoardDao {
 		int count = sqlSession.update("board.update", boardVo);
 		return 1==count;
 	}
-	public Boolean delete(long no) {
-		int count = sqlSession.delete("board.delete",no);
+	public Boolean delete(Map map) {
+		int count = sqlSession.delete("board.delete",map);
 		return count==1;
 	}
 	public Long getUser(long no) {
@@ -57,5 +58,11 @@ public class BoardDao {
 	public Boolean updateByHit(long no) {
 		int count = sqlSession.update("board.updateByHit",no);
 		return count == 1;
+	}
+	public List<BoardVo> getSearch(Map<String, Object> paramMap) {
+		return sqlSession.selectList("board.search", paramMap);
+	}
+	public int getKwdTotalRowNum(String kwd) {
+		return sqlSession.selectOne("board.getKwdTotalRowNum", kwd);
 	}
 }
