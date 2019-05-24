@@ -175,7 +175,7 @@
 	</profiles>
 
 	<build>
-		<sourceDirectory>src/main/resources</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 
 		<plugins>
 			<plugin>
