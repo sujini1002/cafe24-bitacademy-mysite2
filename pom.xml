@@ -198,12 +198,15 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
-					<url>http://127.0.0.1/manager/text</url>
+					<url>http://127.0.0.1:8080/manager/text</url>
 					<path>/mysite2</path>
 					<username>admin</username>
 					<password>manager</password>
 				</configuration>
 			</plugin>
 		</plugins>
+		<!-- war파일 이름은 <path>mysite2</path>안에 값으로  저장시킴(mysite2) -->
+		<!-- jenkins가 빌드된 war파일을  201라인의 127.0.0.1:8080을 읽어서 (tomcat-cafe24 포트번호가 8080이다.)
+			tomcat-cafe24의 manager에게 주어서 tomcat-cafe24의 manager가 mysite2에 war파일을 업로드(배포)시킨다. -->
 	</build>
 </project>
