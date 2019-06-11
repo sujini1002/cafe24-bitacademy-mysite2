@@ -5,7 +5,7 @@
 	<!-- 전체 리스트 가져오기 -->
 	<select id="getList" resultType="boardVo" parameterType="pagingvo">
 		<![CDATA[
-			select b.no, b.title,u.name as user_name,b.hit,to_timestamp(b.reg_date::char,'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no as user_no,b.depth
+			select b.no, b.title,u.name as user_name,b.hit,to_timestamp(to_char(b.reg_date,'yyyy-mm-dd HH24:MI:SS'),'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no as user_no,b.depth
 			from board b join member u
 			on b.member_no = u.no
 			order by group_no desc, order_no asc
@@ -35,7 +35,7 @@
 	<!-- view페이지 가져오기 -->
 	<select id="getView" parameterType="long" resultType="boardVo">
 		<![CDATA[
-			select b.no, b.title,b.content,to_timestamp(b.reg_date::char,'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no as user_no,u.name as user_name
+			select b.no, b.title,b.content,to_timestamp(to_char(b.reg_date,'yyyy-mm-dd HH24:MI:SS'),'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no as user_no,u.name as user_name
 			from board b join member u
 			on b.member_no = u.no
 			where b.no = #{_parameter} 
@@ -82,7 +82,7 @@
 	<!-- 검색 -->
 	<select id="search" resultType="boardVo" parameterType="map">
 		<![CDATA[
-			select b.no, b.title,u.name as user_name,b.hit,to_timestamp(b.reg_date::char,'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no,b.depth
+			select b.no, b.title,u.name as user_name,b.hit,to_timestamp(to_char(b.reg_date,'yyyy-mm-dd HH24:MI:SS'),'yyyy-mm-dd HH24:MI:SS')as reg_date,b.member_no,b.depth
 			from board b join member u
             on b.member_no = u.no
 			where b.title like CONCAT('%',#{kwd},'%')
