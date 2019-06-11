@@ -48,7 +48,6 @@ public class UserController {
 			model.addAllAttributes(result.getModel()); // Map으로 보내줌
 			return "user/join";
 		}
-		
 		userService.join(userVo);
 		return "redirect:/user/joinsuccess";//dispatcher가 컨텍스트 패스를 붙이고 다시 리다이렉트를 보낸다.
 	}
@@ -74,8 +73,8 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/update",method = RequestMethod.POST)
-	public String update(@AuthUser UserVo updateUserVo,HttpSession session,Model model) {
-		
+	public String update(@ModelAttribute UserVo updateUserVo,HttpSession session,Model model) {
+		System.out.println(updateUserVo);
 		boolean result = userService.update(updateUserVo);
 		if(result) {
 			session.setAttribute("authUser", updateUserVo);

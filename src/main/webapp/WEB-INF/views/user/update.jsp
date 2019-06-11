@@ -35,14 +35,14 @@
 					<fieldset>
 						<legend>성별</legend>
 						<c:choose >
-						<c:when test='${userVo.gender eq "female" }'>
-						<label>여</label> <input type="radio" name="gender" value="female" checked="checked">
-						<label>남</label> <input type="radio" name="gender" value="male">
-						</c:when>
-						<c:otherwise>
-						<label>여</label> <input type="radio" name="gender" value="female" >
-						<label>남</label> <input type="radio" name="gender" value="male" checked="checked">
-						</c:otherwise>
+							<c:when test='${userVo.gender eq "여" }'>
+								<label>여</label> <input type="radio" name="gender" value="여" checked="checked">
+								<label>남</label> <input type="radio" name="gender" value="남">
+							</c:when>
+							<c:otherwise>
+								<label>여</label> <input type="radio" name="gender" value="여" >
+								<label>남</label> <input type="radio" name="gender" value="남" checked="checked">
+							</c:otherwise>
 						</c:choose>
 					</fieldset>
 					

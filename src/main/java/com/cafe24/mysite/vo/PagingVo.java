@@ -19,7 +19,9 @@ public class PagingVo {
 	}
 	private void startpaging() {
 		//전체 페이지 갯수
-		if(totalRowNum%PAGE_PER_NUM==0) {
+		if(totalRowNum<PAGE_PER_NUM) {
+			this.totalPageNum = 1;
+		}else if(totalRowNum%PAGE_PER_NUM==0) {
 			this.totalPageNum=totalRowNum/PAGE_PER_NUM;
 		}else {
 			this.totalPageNum=totalRowNum/PAGE_PER_NUM+1;

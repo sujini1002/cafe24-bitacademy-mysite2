@@ -51,7 +51,9 @@ public class BoardService {
 		int startPageBlock = (page<=pagingvo.getPAGE_PER_BLOCK()/2)?1:page-pagingvo.getPAGE_PER_BLOCK()/2;
 		//현재 페이지 마지막 블럭
 		int endPageBlock =  page+pagingvo.getPAGE_PER_BLOCK()/2;
-		if(startPageBlock==1) {
+		if(pagingvo.getTotalPageNum()<pagingvo.getPAGE_PER_BLOCK()) {
+			endPageBlock = pagingvo.getTotalPageNum();
+		}else if(startPageBlock==1) {
 			endPageBlock = pagingvo.getPAGE_PER_BLOCK();
 		}else if(page+pagingvo.getPAGE_PER_BLOCK()-1 > pagingvo.getTotalPageNum()) {
 			startPageBlock = pagingvo.getTotalPageNum()-pagingvo.getPAGE_PER_BLOCK()+1;
