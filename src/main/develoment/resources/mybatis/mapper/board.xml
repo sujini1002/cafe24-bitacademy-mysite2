@@ -22,9 +22,14 @@
 	<!-- 글쓰기  -->
 	<insert id="insert" parameterType="boardvo">
 		<![CDATA[
-			insert into board values(default,#{title},#{content},0,now(),#{user_no},
+			insert into board values(nextval('seq_board'),#{title},#{content},0,now(),#{user_no},
 			(select case when max(group_no)is null then 1 else max(group_no)+1 end from board b),1,0)
 		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER"><!-- 본 쿼리가 끝난 후 실행  -->
+		<![CDATA[
+			 SELECT currval('seq_board');
+		]]>
+	</selectKey>
 	</insert>
 	<!-- 글쓰기 후 view페이지 이동을 위한 no값 구하기 --> 
 	<select id="lastID" resultType="long">
@@ -50,10 +55,15 @@
 	<!-- 답글 작성하기 -->
 	<insert id="reply" parameterType="boardvo">
 		<![CDATA[
-			insert into board values(default,#{title},#{content},0,now(),#{user_no},
+			insert into board values(nextval('seq_board'),#{title},#{content},0,now(),#{user_no},
 			(select group_no from board b where no=#{no}),(select order_no+1 from board b where no=#{no}),
 			(select depth+1 from board b where no=#{no}))
 		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER"><!-- 본 쿼리가 끝난 후 실행  -->
+		<![CDATA[
+			 SELECT currval('seq_board');
+		]]>
+		</selectKey>
 	</insert>
 	<!-- 답글의 순서 정렬하기 -->
 	<update id="updateByOrderNo" parameterType="boardvo">

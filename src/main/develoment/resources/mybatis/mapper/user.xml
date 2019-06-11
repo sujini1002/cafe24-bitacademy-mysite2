@@ -4,15 +4,16 @@
 <mapper namespace="user">
 
 	<insert id="insert" parameterType="uservo">
+		<selectKey keyProperty="no" resultType="long" order="BEFORE"><!-- 본 쿼리가 
+				끝난 후 실행 -->
+		<![CDATA[
+			 SELECT nextval('seq_member');
+		]]>
+		</selectKey>
 	<![CDATA[
 		insert into member (no,name,email,password,gender,join_date)
-		values(default,#{name},#{email},#{password},cast(#{gender} as enum_member_gender),now())
+		values(#{no},#{name},#{email},#{password},cast(#{gender} as enum_member_gender),now())
 	]]>
-	<selectKey keyProperty="no" resultType="long" order="AFTER"><!-- 본 쿼리가 끝난 후 실행  -->
-		<![CDATA[
-			 SELECT currval('member_no_seq');
-		]]>
-	</selectKey>
 	</insert>
 	
 	<select id="getByEmailAndPassword" parameterType='map' resultType="uservo">

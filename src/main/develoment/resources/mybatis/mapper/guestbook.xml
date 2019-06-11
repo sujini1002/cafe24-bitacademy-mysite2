@@ -6,14 +6,19 @@
 	<![CDATA[
 				select no,name,contents,to_char(reg_date,'yyyy-mm-dd') as reg_date
 				from guestbook 
-				order by reg_date desc
+				order by no desc
 	]]>
 	</select>
 	
 	<insert id="insert" parameterType="guestbookvo">
 		<![CDATA[
-			insert into guestbook values(default,#{name},#{password},#{contents},now())
+			insert into guestbook values(nextval('seq_guestbook'),#{name},#{password},#{contents},now())
 		]]>
+		<selectKey keyProperty="no" resultType="long" order="AFTER"><!-- 본 쿼리가 끝난 후 실행  -->
+		<![CDATA[
+			 SELECT currval('seq_guestbook');
+		]]>
+	</selectKey>
 	</insert>
 	
 	<delete id="delete" parameterType="guestbookvo">
